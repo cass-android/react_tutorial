@@ -51,7 +51,6 @@ class Game extends React.Component {
     this.state = {
       history: [{
         squares: Array(9).fill(null),
-
       }],
       moveNumber: 0,
       xIsNext: true,
@@ -79,10 +78,10 @@ class Game extends React.Component {
     });
   }
 
-  jumpTo(step) {
+  jumpTo(move) {
     this.setState({
-      moveNumber: step,
-      xIsNext: (step % 2) === 0,
+      moveNumber: move,
+      xIsNext: (move % 2) === 0,
     });
   }
 
@@ -100,9 +99,20 @@ class Game extends React.Component {
         '('+ col +','+ row + ') ' +
         'Go to move #' + move :
         'Go to game start';
+      
+      function clickFunction() {
+        document.getElementById("button").style.color = "red";
+        }
+
       return (
         <li key={move}>
-          <button onClick={() => this.jumpTo(move)}>{desc}</button>
+          <button id="button"
+            // bolds move corresponding to the current state (which changes as selected)
+            className = {
+              move === this.state.moveNumber ? "selected-button" : ""}
+            onClick={() => this.jumpTo(move)}>
+            {desc}
+          </button>
         </li>
       );
     });
