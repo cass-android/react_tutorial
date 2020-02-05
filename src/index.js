@@ -4,7 +4,9 @@ import './index.css';
 
 function Square(props) {
   return (
-    <button className="square" onClick={props.onClick}>
+    <button 
+      className="square" 
+      onClick={props.onClick}>
       {props.value}
     </button>
   );
@@ -46,20 +48,21 @@ class Board extends React.Component {
 class Game extends React.Component {
   constructor(props) {
     super(props);
-    // determines initial state
     this.state = {
       history: [{
         squares: Array(9).fill(null),
+
       }],
-      stepNumber: 0,
+      moveNumber: 0,
       xIsNext: true,
     };
   }
 
   handleClick(i) {
-    const history = this.state.history.slice(0, this.state.stepNumber + 1);
+    const history = this.state.history.slice(0, this.state.moveNumber + 1);
     const current = history[history.length - 1];
     const squares = current.squares.slice();
+
     if (calculateWinner(squares) || squares[i]) {
       return;
     }
@@ -67,26 +70,34 @@ class Game extends React.Component {
     this.setState({
       history: history.concat([{
         squares: squares,
+        // saves the index of the square (0-8)
+        locate: i,
       }]),
-      stepNumber: history.length,
+      moveNumber: history.length,
       xIsNext: !this.state.xIsNext,
+
     });
   }
 
   jumpTo(step) {
     this.setState({
-      stepNumber: step,
+      moveNumber: step,
       xIsNext: (step % 2) === 0,
     });
   }
 
   render() {
     const history = this.state.history;
-    const current = history[this.state.stepNumber];
+    const current = history[this.state.moveNumber];
     const winner = calculateWinner(current.squares);
 
     const moves = history.map((step, move) => {
+      // converts the index of the square into column, row
+      const col = step.locate % 3
+      const row = step.locate < 3 ? 0 : step.locate < 6 ? 1 : 2
+
       const desc = move ?
+        '('+ col +','+ row + ') ' +
         'Go to move #' + move :
         'Go to game start';
       return (
