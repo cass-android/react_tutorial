@@ -22,28 +22,20 @@ class Board extends React.Component {
         );
   }
 
+// generate rows of squares with two loops
   render() {
-    return (
-      <div>
-        <div className="board-row">
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(3)}
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-          {this.renderSquare(8)}
-        </div>
-      </div>
-    );
+    let output_outer = [];
+    for(let i=0; i < 7; i+=3) {
+      let output_inner = [];
+      for(let k=0; k < 3; k++) {
+        output_inner.push(this.renderSquare(i+k))
+        }
+      output_outer.push(<div className="board-row">
+        {output_inner}</div>)
+      }
+    return <div>{output_outer}</div>;
+    }
   }
-}
 
 class Game extends React.Component {
   constructor(props) {
@@ -100,10 +92,6 @@ class Game extends React.Component {
         'Go to move #' + move :
         'Go to game start';
       
-      function clickFunction() {
-        document.getElementById("button").style.color = "red";
-        }
-
       return (
         <li key={move}>
           <button id="button"
