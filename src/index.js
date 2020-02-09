@@ -37,6 +37,7 @@ class Board extends React.Component {
     }
   }
 
+
 class Game extends React.Component {
   constructor(props) {
     super(props);
@@ -46,8 +47,18 @@ class Game extends React.Component {
       }],
       moveNumber: 0,
       xIsNext: true,
+      isAscending: true,
+
     };
   }
+
+  //use toggle to sort moves
+  handleToggle() {
+    this.setState({
+        isAscending: !this.state.isAscending
+      });
+
+    }
 
   handleClick(i) {
     const history = this.state.history.slice(0, this.state.moveNumber + 1);
@@ -81,9 +92,11 @@ class Game extends React.Component {
     const history = this.state.history;
     const current = history[this.state.moveNumber];
     const winner = calculateWinner(current.squares);
+    const ascending = this.state.isAscending;
 
     const moves = history.map((step, move) => {
       // converts the index of the square into column, row
+
       const col = step.locate % 3
       const row = step.locate < 3 ? 0 : step.locate < 6 ? 1 : 2
 
@@ -93,17 +106,21 @@ class Game extends React.Component {
         'Go to game start';
       
       return (
-        <li key={move}>
+        <ul key={move}>
           <button id="button"
             // bolds move corresponding to the current state (which changes as selected)
             className = {
-              move === this.state.moveNumber ? "selected-button" : ""}
+              move === this.state.moveNumber ? "selected-button" : "button"
+            }
             onClick={() => this.jumpTo(move)}>
             {desc}
           </button>
-        </li>
+        </ul>
       );
     });
+
+    // reverse order of moves if descending is selected
+    if (!ascending) {moves.reverse()};
 
     let status;
     if (winner) {
@@ -122,17 +139,26 @@ class Game extends React.Component {
         </div>
         <div className="game-info">
           <div>{status}</div>
-          <ol>{moves}</ol>
+          <button
+            onClick={() => this.handleToggle()}>
+            {ascending ? 'sort descending' : 'sort ascending'}
+          </button>
+          <ul>
+          {moves}
+          </ul>
         </div>
       </div>
     );
   }
 }
 
+
+
 // ========================================
 
 ReactDOM.render(
   <Game />,
+
   document.getElementById('root')
 );
 
