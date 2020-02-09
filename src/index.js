@@ -29,16 +29,20 @@ class Board extends React.Component {
 
 // generate rows of squares with two loops
   render() {
-    let output_outer = [];
-    for(let i=0; i < 7; i+=3) {
-      let output_inner = [];
-      for(let k=0; k < 3; k++) {
-        output_inner.push(this.renderSquare(i+k))
+    let row = [];
+    let side = 3;
+
+    for(let i=0; i < (side**2); i+=side) {
+      let row_contents = [];
+      for(let k=0; k < side; k++) {
+        row_contents.push(this.renderSquare(i+k))
         }
-      output_outer.push(<div className="board-row">
-        {output_inner}</div>)
+      row.push(<div 
+        key={i}
+        className="board-row">
+        {row_contents}</div>)
       }
-    return <div>{output_outer}</div>;
+    return <div>{row}</div>;
     }
   }
 
@@ -164,7 +168,6 @@ class Game extends React.Component {
 
 ReactDOM.render(
   <Game />,
-
   document.getElementById('root')
 );
 
@@ -181,6 +184,8 @@ function calculateWinner(squares) {
     [0, 4, 8],
     [2, 4, 6],
   ];
+
+  // check for a winner
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
@@ -190,8 +195,19 @@ function calculateWinner(squares) {
       };
     }
   }
-  return {
-        winner: null,
+  // check if there are any remaining squares
+  for(let i = 0; i < squares.length; i++) {
+    if (squares[i] === null) {
+        return {
+          winner: null,
+          line: null,
+      };
+    }
+  }
+  // if not, return tie
+      return {
+        winner: 'tie',
         line: null,
       };
-}
+  }
+
